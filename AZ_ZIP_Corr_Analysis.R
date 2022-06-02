@@ -53,7 +53,16 @@ corrplot(res, type = "upper", order = "hclust",
 
 
 model = lm(death_rate~
-             poverty_rate 
+             poverty_rate +
+             white_rate +
+             african_american_rate +
+             american_indian_rate +
+             asian_rate +
+             hawaiian_rate +
+             other_race_rate +
+             two_or_more_races_rate +
+             hispanic_rate +
+             not_hispanic_rate
            , data=df)
 
 summary(model)
