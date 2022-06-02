@@ -4,7 +4,7 @@ tryCatch({
   drv <- dbDriver("PostgreSQL")
   print("Connecting to Database…")
   connec <- dbConnect(drv, 
-                      dbname = "djlittle",
+                      dbname = "census",
                       host = "postgis.rc.asu.edu", 
                       port = 5432,
                       user = "djlittle", 
@@ -16,7 +16,6 @@ error=function(cond) {
 })
 
 df <- dbGetQuery(connec, "select 
-	                --zipcode, 
                  cast(DEATHS as float)/cast(POPULATION as float) as death_rate, 
                  cast(s2201_c01_021e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as poverty_rate,
                  cast(s2201_c01_025e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as white_rate,
@@ -28,8 +27,7 @@ df <- dbGetQuery(connec, "select
                  cast(s2201_c01_031e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as two_or_more_races_rate,
                  cast(s2201_c01_032e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as hispanic_rate,
                  cast(s2201_c01_033e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as not_hispanic_rate,
-                 s2201_c01_034e as median_income_rate,
-                 --s2201_c02_021e as pov_rate
+                 --s2201_c01_034e as median_income,
                  s2201_c02_023e/100 as disability_rate,
                  cast(s2201_c03_001e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as snap_rate
                  from 
@@ -53,3 +51,9 @@ library(corrplot)
 corrplot(res, type = "upper", order = "hclust", 
          tl.col = "black", tl.srt = 45)
 
+
+model = lm(death_rate~
+             poverty_rate 
+           , data=df)
+
+summary(model)
