@@ -15,36 +15,42 @@ error=function(cond) {
   print("Unable to connect to Database.")
 })
 
-df <- dbGetQuery(connec, "select 
-	                --zipcode, 
-                 cast(DEATHS as float)/cast(POPULATION as float) as death_rate, 
-                 cast(s2201_c01_021e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as poverty_rate,
-                 cast(s2201_c01_025e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as white_rate,
-                 cast(s2201_c01_026e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as african_american_rate,
-                 cast(s2201_c01_027e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as american_indian_rate,
-                 cast(s2201_c01_028e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as asian_rate,
-                 cast(s2201_c01_029e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as hawaiian_rate,
-                 cast(s2201_c01_030e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as other_race_rate,
-                 cast(s2201_c01_031e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as two_or_more_races_rate,
-                 cast(s2201_c01_032e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as hispanic_rate,
-                 cast(s2201_c01_033e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as not_hispanic_rate,
-                 s2201_c01_034e as median_income_rate,
-                 --s2201_c02_021e as pov_rate
-                 s2201_c02_023e/100 as disability_rate,
-                 cast(s2201_c03_001e as float) /cast(public.acs_2019_snap_w_race.s2201_c01_001e as float) as snap_rate
-                 from 
-                 public.zip_code_deaths
-                 left join 
-                 public.population_by_zip
-                 on 
-                 RIGHT(public.population_by_zip.geoid , 5) = text(public.zip_code_deaths.zipcode )
-                 left join 
-                 public.acs_2019_snap_w_race
-                 on 
-                 RIGHT(public.acs_2019_snap_w_race.geo_id , 5) = text(public.zip_code_deaths.zipcode )
-                 where 
-                 public.population_by_zip.geoid is not null
-                 and public.acs_2019_snap_w_race.s2201_c01_001e>0
+df <- dbGetQuery(connec, "SELECT 
+                 EP_POV as \"Poverty\",
+                 EP_UNEMP as \"Unemployed\",
+                 EP_PCI as \"Per_Cap_Income\",
+                 EP_NOHSDP as \"No_Diploma\",
+                 EP_AGE65 as \"Age_65\",
+                 EP_AGE17 as \"Age_17\",
+                 EP_DISABL as \"Disability\",
+                 EP_SNGPNT as \"Single_Parent\",
+                 EP_AIAN as \"AIAN\",
+                 EP_ASIAN as \"Asian\",
+                 EP_AFAM as \"AFAM\",
+                 EP_NHPI as \"Hawaiian\",
+                 EP_HISP as \"Hispanic\",
+                 EP_OTHER as \"Other_Race\",
+                 EP_SPAN as \"Spanish_Speakers\",
+                 EP_CHIN as \"Chinese_Speakers\",
+                 EP_VIET as \"Vietnamese_Speakers\",
+                 EP_KOR as \"Korean_Speakers\",
+                 EP_RUS as \"Russian_Speakers\",
+                 EP_MUNIT as \"Housing_10_Units\",
+                 EP_MOBILE as \"Mobile_Homes\",
+                 EP_CROWD as \"More_PPL_VS_Rooms\",
+                 EP_NOVEH as \"No_Vehicle\",
+                 EP_GROUPQ as \"Group_Quarters\",
+                 R_HOSP as \"Hospitals\",
+                 R_URG as \"Urgent_Care\",
+                 R_PHARM as \"Pharmacies\",
+                 R_PCP as \"PCPs\",
+                 EP_UNINSUR as \"Uninsured\",
+                 ER_CARDIO as \"Cardio_Death_Rate\",
+                 ER_DIAB as \"Diabetes\",
+                 ER_OBES as \"Obesity\",
+                 ER_RESPD as \"Respiratory\",
+                 EP_NOINT as \"No_Internet\"
+                 FROM public.mh_svi_county_2018;
                  ")
 
 res <- cor(df)
